@@ -278,9 +278,7 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-
-                }
+                "schema": {}
               }
             }
           }
@@ -290,42 +288,6 @@
             "APIKeyHeader": []
           }
         ]
-      }
-    },
-    "/wondercraft-public-api.json": {
-      "get": {
-        "summary": "Get Custom Openapi Json",
-        "operationId": "get_custom_openapi_json_wondercraft_public_api_json_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/docs": {
-      "get": {
-        "summary": "Get Swagger Docs",
-        "operationId": "get_swagger_docs_docs_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-
-                }
-              }
-            }
-          }
-        }
       }
     }
   },
