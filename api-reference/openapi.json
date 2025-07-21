@@ -12,7 +12,7 @@
         ],
         "summary": "Create a new episode from the user provided script segments",
         "description": "Starts a background job to produce an audio file with the provided script segments. The response\n    contains a `job_id` that can be used to query with the `/podcast/{job_id}` to query for status.\n    Requires a valid `X-API-TOKEN` header.\n\n    Throws:\n    - 429 if the user has too many jobs in flight.\n    - 400 if any voice_id or music_id provided is invalid",
-        "operationId": "generate_scripted_episode_podcast_scripted_post",
+        "operationId": "generate_user_scripted_episode_podcast_scripted_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -119,6 +119,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "format": "uuid",
               "title": "Job Id"
             }
           }
@@ -147,6 +148,100 @@
         }
       }
     },
+    "/podcast/convo-mode/ai-scripted": {
+      "post": {
+        "tags": [
+          "Podcasts"
+        ],
+        "summary": "Create a new AI scripted episode from a prompt using Convo Mode",
+        "description": "Starts a background job that creates an AI generated script and produces an audio file in convo mode.\n    The response contains a `job_id` that can be used with the `/podcast/{job_id}` endpoint\n    to query for status.\n    Requires a valid `X-API-TOKEN` header.\n\n    Throws:\n    - 429 if the user has too many jobs in flight.\n    - 400 if any voice_ids provided are invalid or if the length of voice_ids is not 2.",
+        "operationId": "generate_ai_scripted_convo_mode_episode_podcast_convo_mode_ai_scripted_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateAiScriptedConvoModeEpisodeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateEpisodeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/podcast/convo-mode/user-scripted": {
+      "post": {
+        "tags": [
+          "Podcasts"
+        ],
+        "summary": "Create a new episode from the user provided script segments using Convo Mode",
+        "description": "Starts a background job to produce an audio file with the provided script segments in convo mode. The response\n    contains a `job_id` that can be used to query with the `/podcast/{job_id}` to query for status.\n    Requires a valid `X-API-TOKEN` header.\n\n    Throws:\n    - 429 if the user has too many jobs in flight.\n    - 400 if any voice_ids provided are invalid or if the length of voice_ids is not 2.",
+        "operationId": "generate_user_scripted_convo_mode_episode_podcast_convo_mode_user_scripted_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateUserScriptedConvoModeEpisodeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateEpisodeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
     "/verify": {
       "get": {
         "tags": [
@@ -173,10 +268,105 @@
           }
         ]
       }
+    },
+    "/podcasts": {
+      "get": {
+        "summary": "Get Podcasts For User",
+        "operationId": "get_podcasts_for_user_podcasts_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/wondercraft-public-api.json": {
+      "get": {
+        "summary": "Get Custom Openapi Json",
+        "operationId": "get_custom_openapi_json_wondercraft_public_api_json_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/docs": {
+      "get": {
+        "summary": "Get Swagger Docs",
+        "operationId": "get_swagger_docs_docs_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "GenerateAiScriptedConvoModeEpisodeRequest": {
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Prompt",
+            "description": "The prompt for the episode, can include links"
+          },
+          "voice_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Voice Ids",
+            "description": "A list of voice_ids to use for the generated audio. If the script has multiple speakers, we will use the voices from this list in the order then appear in. All ids in this list must be unique. If no IDs are provided, 2 defaults will be used."
+          },
+          "delivery_instructions": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delivery Instructions",
+            "description": "An optional delivery instructions for the generated audio. This will be used to guide the generation of the audio."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "prompt"
+        ],
+        "title": "GenerateAiScriptedConvoModeEpisodeRequest",
+        "description": "A request to start a job that generates an audio file for a podcast in convo mode\nwith a script generated by AI using the provided prompt.\nAn optional list of Voice IDs can be provided to control the audio generation output. If no voice_ids are provided,\ndefaults of up to 2 convo-mode voices will be chosen."
+      },
       "GenerateAiScriptedEpisodeRequest": {
         "properties": {
           "prompt": {
@@ -227,6 +417,37 @@
           "job_id"
         ],
         "title": "GenerateEpisodeResponse"
+      },
+      "GenerateUserScriptedConvoModeEpisodeRequest": {
+        "properties": {
+          "script": {
+            "items": {
+              "$ref": "#/components/schemas/ScriptSegment"
+            },
+            "type": "array",
+            "title": "Script",
+            "description": "The segments forming the script for the episode"
+          },
+          "delivery_instructions": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delivery Instructions",
+            "description": "An optional delivery instructions for the generated audio. This will be used to guide the generation of the audio."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "script"
+        ],
+        "title": "GenerateUserScriptedConvoModeEpisodeRequest",
+        "description": "A request to start a job that generates an audio file for a podcast in convo mode\nwith a script generated by the user."
       },
       "GenerateUserScriptedEpisodeRequest": {
         "properties": {
@@ -433,9 +654,6 @@
         "properties": {
           "status": {
             "type": "string",
-            "enum": [
-              "ok"
-            ],
             "const": "ok",
             "title": "Status",
             "description": "A value representing a successful request"
