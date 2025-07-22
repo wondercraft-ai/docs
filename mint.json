@@ -60,9 +60,11 @@
     {
       "group": "Endpoint Examples",
       "pages": [
-        "api-reference/endpoint/generate_podcast", 
+        "api-reference/endpoint/generate_podcast",
         "api-reference/endpoint/user_scripted",
-        "api-reference/endpoint/get_job_status"
+        "api-reference/endpoint/get_job_status",
+        "api-reference/endpoint/convo_mode_ai_scripted",
+        "api-reference/endpoint/convo_mode_user_scripted"
       ]
     }
   ],
@@ -71,4 +73,3 @@
     "linkedin": "https://www.linkedin.com/company/wondercraftai"
   }
 }
- 
