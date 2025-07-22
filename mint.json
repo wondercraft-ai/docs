@@ -51,20 +51,27 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": ["introduction", "quickstart", "advanced-usage"]
+      "pages": [
+        "introduction",
+        "quickstart",
+        "capabilities",
+        "advanced-usage"
+      ]
     },
     {
       "group": "API Documentation",
-      "pages": ["api-reference/introduction"]
+      "pages": [
+        "api-reference/introduction"
+      ]
     },
     {
       "group": "Endpoint Examples",
       "pages": [
+        "api-reference/endpoint/convo_mode_ai_scripted",
+        "api-reference/endpoint/convo_mode_user_scripted",
         "api-reference/endpoint/generate_podcast",
         "api-reference/endpoint/user_scripted",
-        "api-reference/endpoint/get_job_status",
-        "api-reference/endpoint/convo_mode_ai_scripted",
-        "api-reference/endpoint/convo_mode_user_scripted"
+        "api-reference/endpoint/get_job_status"
       ]
     }
   ],

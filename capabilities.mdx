@@ -1,0 +1,31 @@
+---
+title: "Capabilities"
+---
+
+**The Wondercraft API lets you perform four broad intents:**
+
+1. Create a natural podcast with 2 hosts using Convo Mode, [using AI to generate a script](/api-reference/endpoint/convo_mode_ai_scripted)
+2. Create a natural podcast with 2 hosts using Convo Mode, [with a user provided script](/api-reference/endpoint/convo_mode_user_scripted)
+3. Create any other audio content (audio ads, podcasts with more or less than 2 speakers, meditations, audiobooks), [using AI to generate a script](/api-reference/endpoint/generate_podcast)
+4. Create any other audio content, [with a user provided script](/api-reference/endpoint/user_scripted)
+
+
+**For these actions, the API supports the ability to:**
+
+- Choose which voices you want to use
+    - Retrieve the voiceID’s from the studio, including any voice clones and custom voices
+    - Otherwise, default voices will be used
+- Add music and control its playback *(Not supported by the two Convo Mode podcast endpoints)*
+    - Choose your clip and retrieve the musicID from the studio
+    - Add a fade in and out for a set duration of time
+    - Set when the music playback should start and end
+    - Control the volume of the music clip
+- Add ‘Delivery Instructions’ prompt on how you want the dialogue to delivered *(Only supported by the two Convo Mode podcast endpoints)*
+    - Specify things like tone, accent, pace, the vibe between the two speakers
+
+**The API does not currently support the following capabilities. Please use the Wondercraft Studio to achieve these functionalities:**
+
+- Adding sound effects
+- Performing timeline controls on voice, such as speed, splitting, trimming, adding or removing pauses, volume and duplication
+- Uploading your own audio clips and music
+- Iteratively editing from a draft or starting point
