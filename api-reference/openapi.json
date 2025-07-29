@@ -105,7 +105,7 @@
           "Podcasts"
         ],
         "summary": "Get audio content result and status",
-        "description": "Gets the status of podcast generation job, including a link to download it if the job was successful.\n    Requires a valid `X-API-TOKEN` header.\n\n    Throws\n    - 404 if job_id is invalid",
+        "description": "Gets the status of podcast generation job, including a link to download it if the job was\n    successful. Requires a valid `X-API-TOKEN` header.\n\n\n    \n    The link returned expires after 24 hours.\n    Feel free to call this endpoint again to get a fresh link, no need to regenerate the podcast\n    and waste credits.\n\n    Throws\n    - 404 if job_id is invalid",
         "operationId": "get_episode_status_podcast__job_id__get",
         "security": [
           {
@@ -154,7 +154,7 @@
           "Podcasts"
         ],
         "summary": "Generate AI-scripted podcast with 2 hosts using Convo Mode",
-        "description": "Starts a background job that creates an AI generated script and produces an audio file in convo mode.\n    The response contains a `job_id` that can be used with the `/podcast/{job_id}` endpoint\n    to query for status.\n    Requires a valid `X-API-TOKEN` header.\n\n\n    **Note that generating via Convo Mode yields more natural results but takes longer. Expect at least 1 minute of processing per minute duration of audio before investigating a potential failure.**\n\n    Throws:\n    - 429 if the user has too many jobs in flight.\n    - 400 if any voice_ids provided are invalid or if the length of voice_ids is not 2.",
+        "description": "Starts a background job that creates an AI generated script and produces an audio file in convo mode.\n    The response contains a `job_id` that can be used with the `/podcast/{job_id}` endpoint\n    to query for status.\n    Requires a valid `X-API-TOKEN` header.\n\n\n    **Note that generating via Convo Mode yields more natural results but takes longer.\n    Expect at least 1 minute of processing per minute duration of audio before investigating a potential failure.**\n\n    Throws:\n    - 429 if the user has too many jobs in flight.\n    - 400 if any voice_ids provided are invalid or if the length of voice_ids is not 2.",
         "operationId": "generate_ai_scripted_convo_mode_episode_podcast_convo_mode_ai_scripted_post",
         "requestBody": {
           "content": {
@@ -201,7 +201,7 @@
           "Podcasts"
         ],
         "summary": "Generate podcast with 2 hosts using Convo Mode, with a user provided script",
-        "description": "Starts a background job to produce an audio file with the provided script segments in convo mode. The response\n    contains a `job_id` that can be used to query with the `/podcast/{job_id}` to query for status.\n    Requires a valid `X-API-TOKEN` header.\n\n\n    **Note that generating via Convo Mode yields more natural results but takes longer. Expect at least 1 minute of processing per minute duration of audio before investigating a potential failure.**\n\n\n    Throws:\n    - 429 if the user has too many jobs in flight.\n    - 400 if any voice_ids provided are invalid or if the length of voice_ids is not 2.",
+        "description": "Starts a background job to produce an audio file with the provided script segments in convo mode. The response\n    contains a `job_id` that can be used to query with the `/podcast/{job_id}` to query for status.\n    Requires a valid `X-API-TOKEN` header.\n\n\n    **Note that generating via Convo Mode yields more natural results but takes longer.\n    Expect at least 1 minute of processing per minute duration of audio before investigating a potential failure.**\n\n\n    Throws:\n    - 429 if the user has too many jobs in flight.\n    - 400 if any voice_ids provided are invalid or if the length of voice_ids is not 2.",
         "operationId": "generate_user_scripted_convo_mode_episode_podcast_convo_mode_user_scripted_post",
         "requestBody": {
           "content": {
@@ -300,7 +300,7 @@
           "prompt": {
             "type": "string",
             "title": "Prompt",
-            "description": "The prompt for the episode, can include links"
+            "description": "The prompt to instruct the AI to generate the script. You can specify the duration, and include links. Sometimes, the AI hallucinates, so it helps to mention that this podcast has two hosts."
           },
           "voice_ids": {
             "items": {
@@ -308,7 +308,7 @@
             },
             "type": "array",
             "title": "Voice Ids",
-            "description": "A list of voice_ids to use for the generated audio. If the script has multiple speakers, we will use the voices from this list in the order then appear in. All ids in this list must be unique. If no IDs are provided, 2 defaults will be used."
+            "description": "A list of voice_ids to use for the generated audio. **Must provide exactly 2 voices for this endpoint.** If the script has multiple speakers, we will use the voices from this list in the order they appear in. All ids in this list must be unique. If no IDs are provided, 2 defaults will be used."
           },
           "delivery_instructions": {
             "anyOf": [
@@ -321,6 +321,17 @@
             ],
             "title": "Delivery Instructions",
             "description": "An optional delivery instructions for the generated audio. This will be used to guide the generation of the audio."
+          },
+          "music_spec": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MusicTrackSpec"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "An optional spec for adding background music to the generated script. Note that if the chosenmusic track is longer than the duration of the generated script, it will be cut off."
           }
         },
         "additionalProperties": false,
@@ -403,6 +414,17 @@
             ],
             "title": "Delivery Instructions",
             "description": "An optional delivery instructions for the generated audio. This will be used to guide the generation of the audio."
+          },
+          "music_spec": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MusicTrackSpec"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "An optional spec for adding background music to the generated script. Note that if the chosenmusic track is longer than the duration of the generated script, it will be cut off."
           }
         },
         "additionalProperties": false,
