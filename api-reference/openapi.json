@@ -593,13 +593,25 @@
           "error": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "boolean"
               },
               {
                 "type": "null"
               }
             ],
             "title": "Error",
+            "description": "Whether an error occurred while generating the episode"
+          },
+          "error_details": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Details",
             "description": "The error message if the episode generation failed"
           }
         },
