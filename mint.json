@@ -54,6 +54,7 @@
       "pages": [
         "introduction",
         "quickstart",
+        "image-video-generation",
         "capabilities",
         "advanced-usage"
       ]
@@ -72,6 +73,24 @@
         "api-reference/endpoint/generate_podcast",
         "api-reference/endpoint/user_scripted",
         "api-reference/endpoint/get_job_status"
+      ]
+    },
+    {
+      "group": "Image Generation",
+      "pages": [
+        "api-reference/endpoint/list_image_models",
+        "api-reference/endpoint/upload_image",
+        "api-reference/endpoint/generate_image",
+        "api-reference/endpoint/get_image_job"
+      ]
+    },
+    {
+      "group": "Video Generation",
+      "pages": [
+        "api-reference/endpoint/list_video_models",
+        "api-reference/endpoint/upload_video",
+        "api-reference/endpoint/generate_video",
+        "api-reference/endpoint/get_video_job"
       ]
     }
   ],

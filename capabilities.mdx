@@ -2,7 +2,7 @@
 title: "Capabilities"
 ---
 
-**The Wondercraft API lets you perform four broad intents:**
+**For audio, the Wondercraft API lets you perform four broad intents:**
 
 1. Create a natural podcast with 2 hosts using Convo Mode, [using AI to generate a script](/api-reference/endpoint/convo_mode_ai_scripted)
 2. Create a natural podcast with 2 hosts using Convo Mode, [with a user provided script](/api-reference/endpoint/convo_mode_user_scripted)
@@ -23,9 +23,18 @@ title: "Capabilities"
 - Add ‘Delivery Instructions’ prompt on how you want the dialogue to delivered *(Only supported by the two Convo Mode podcast endpoints)*
     - Specify things like tone, accent, pace, the vibe between the two speakers
 
+**The API also lets you generate images and videos:**
+
+1. [Generate images](/api-reference/endpoint/generate_image) from a prompt, or edit and combine your own images
+2. [Generate videos](/api-reference/endpoint/generate_video) from a prompt, a start (and end) frame, reference images and clips, or by editing an existing video
+3. Upload [reference images](/api-reference/endpoint/upload_image) and [videos](/api-reference/endpoint/upload_video) to use as inputs
+4. Choose the model, resolution, aspect ratio and duration, with credits listed per model and resolution
+
+See the [Image & Video Generation](/image-video-generation) guide for examples.
+
 **The API does not currently support the following capabilities. Please use the Wondercraft Studio to achieve these functionalities:**
 
 - Adding sound effects
 - Performing timeline controls on voice, such as speed, splitting, trimming, adding or removing pauses, volume and duplication
-- Uploading your own audio clips and music
+- Uploading your own audio clips and music (images and videos can be uploaded as generation inputs)
 - Iteratively editing from a draft or starting point
