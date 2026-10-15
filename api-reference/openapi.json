@@ -242,6 +242,346 @@
         ]
       }
     },
+    "/image/models": {
+      "get": {
+        "tags": [
+          "Images"
+        ],
+        "summary": "List image models",
+        "description": "Lists the image models available through the API, with the resolutions, aspect ratios and\ncredits per image each one supports. Requires a valid `X-API-KEY` header.",
+        "operationId": "list_image_models_image_models_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListImageModelsResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/image/upload": {
+      "post": {
+        "tags": [
+          "Images"
+        ],
+        "summary": "Upload a reference image",
+        "description": "Uploads a PNG, JPEG or WebP image (up to 20 MB) to use as a reference when generating images\nor videos. Returns an `image_id` to pass in `reference_image_ids` (or as a video start/end frame).\nRequires a valid `X-API-KEY` header.\n\nThrows:\n- 400 if the file is not a PNG, JPEG or WebP image, or its dimensions are too large\n- 413 if the file is larger than 20 MB",
+        "operationId": "upload_image_image_upload_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_image_image_upload_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadImageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/image": {
+      "post": {
+        "tags": [
+          "Images"
+        ],
+        "summary": "Generate images",
+        "description": "Starts a background job that generates images from a prompt, optionally editing or combining\nreference images. The response contains a `job_id` to poll with `GET /image/{job_id}`, and the\ncredits the job will be charged. Requires a valid `X-API-KEY` header.\n\nThrows:\n- 400 if the model, resolution or aspect ratio is not supported, the model does not accept\n  reference images, or the prompt references images the request does not carry\n- 402 if the workspace does not have enough credits, or the model is not available on its plan\n- 404 if a reference image does not exist or is not accessible\n- 422 if the request body is invalid",
+        "operationId": "generate_image_image_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateImageApiRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateImageJobResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/image/{job_id}": {
+      "get": {
+        "tags": [
+          "Images"
+        ],
+        "summary": "Get image job status and results",
+        "description": "Gets the status of an image generation job, with download links once it has succeeded.\nRequires a valid `X-API-KEY` header.\n\nThe links expire after 24 hours. Call this endpoint again for fresh links instead of\nregenerating the images.\n\nThrows:\n- 404 if the job does not exist or was not created with this API key's user",
+        "operationId": "get_image_job_image__job_id__get",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageJobStatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/video/models": {
+      "get": {
+        "tags": [
+          "Videos"
+        ],
+        "summary": "List video models",
+        "description": "Lists the video models available through the API, with the modes, resolutions (and credits per\nsecond at each), durations and aspect ratios each one supports. Requires a valid `X-API-KEY` header.",
+        "operationId": "list_video_models_video_models_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListVideoModelsResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/video/upload": {
+      "post": {
+        "tags": [
+          "Videos"
+        ],
+        "summary": "Upload a reference or source video",
+        "description": "Uploads an MP4 or MOV video (up to 100 MB and 60 seconds) to use as a reference clip or as the\nvideo to edit. Returns a `video_id` to pass in `reference_video_ids` or as `source_video_id`.\nRequires a valid `X-API-KEY` header.\n\nThrows:\n- 400 if the file is not an MP4 or MOV video, has no video stream, or is longer than 60 seconds\n- 413 if the file is larger than 100 MB",
+        "operationId": "upload_video_video_upload_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_video_video_upload_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadVideoResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/video": {
+      "post": {
+        "tags": [
+          "Videos"
+        ],
+        "summary": "Generate a video",
+        "description": "Starts a background job that generates a video. The mode follows from the inputs you send:\nnothing extra for text-to-video, `start_frame_image_id` for image-to-video (plus\n`end_frame_image_id` for first/last frame), `reference_image_ids` and/or `reference_video_ids`\nfor references, or `source_video_id` to edit a video. The response contains a `job_id` to poll\nwith `GET /video/{job_id}`, and the credits the job is expected to cost.\nRequires a valid `X-API-KEY` header.\n\nThrows:\n- 400 if the model, mode, resolution, duration or aspect ratio is not supported, a clip is too\n  short or long, or the prompt references inputs the request does not carry\n- 402 if the workspace does not have enough credits, or the model is not available on its plan\n- 404 if an image or video does not exist or is not accessible\n- 422 if the request body is invalid, e.g. it mixes inputs from different modes",
+        "operationId": "generate_video_video_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateVideoApiRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateVideoJobResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/video/{job_id}": {
+      "get": {
+        "tags": [
+          "Videos"
+        ],
+        "summary": "Get video job status and result",
+        "description": "Gets the status of a video generation job, with a download link once it has succeeded.\nRequires a valid `X-API-KEY` header.\n\nThe link expires after 24 hours. Call this endpoint again for a fresh link instead of\nregenerating the video.\n\nThrows:\n- 404 if the job does not exist or was not created with this API key's user",
+        "operationId": "get_video_job_video__job_id__get",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VideoJobStatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/verify": {
       "get": {
         "tags": [
@@ -278,9 +618,7 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {
-
-                }
+                "schema": {}
               }
             }
           }
@@ -295,6 +633,366 @@
   },
   "components": {
     "schemas": {
+      "ApiAspectRatio": {
+        "type": "string",
+        "enum": [
+          "16:9",
+          "9:16",
+          "1:1"
+        ],
+        "title": "ApiAspectRatio"
+      },
+      "ApiGeneratedImage": {
+        "properties": {
+          "image_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Image Id",
+            "description": "Can be reused as a reference image or video start frame"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url",
+            "description": "Download URL, valid for 24 hours; poll the job again for a fresh one"
+          },
+          "width": {
+            "type": "integer",
+            "title": "Width",
+            "description": "Image width in pixels"
+          },
+          "height": {
+            "type": "integer",
+            "title": "Height",
+            "description": "Image height in pixels"
+          }
+        },
+        "type": "object",
+        "required": [
+          "image_id",
+          "url",
+          "width",
+          "height"
+        ],
+        "title": "ApiGeneratedImage"
+      },
+      "ApiImageModel": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Model ID to pass as `model_id` when generating"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "description": "Display name of the model"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "description": "What the model is good at"
+          },
+          "resolutions": {
+            "items": {
+              "$ref": "#/components/schemas/ApiResolution"
+            },
+            "type": "array",
+            "title": "Resolutions",
+            "description": "Output resolutions this model supports"
+          },
+          "default_resolution": {
+            "$ref": "#/components/schemas/ApiResolution",
+            "description": "Resolution used when the request sends none"
+          },
+          "aspect_ratios": {
+            "items": {
+              "$ref": "#/components/schemas/ApiAspectRatio"
+            },
+            "type": "array",
+            "title": "Aspect Ratios",
+            "description": "Aspect ratios this model supports"
+          },
+          "supports_reference_images": {
+            "type": "boolean",
+            "title": "Supports Reference Images",
+            "description": "Whether `reference_image_ids` can be sent"
+          },
+          "max_reference_images": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Reference Images",
+            "description": "Maximum number of reference images, or null when the model sets no limit"
+          },
+          "credits_by_resolution": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "propertyNames": {
+              "$ref": "#/components/schemas/ApiResolution"
+            },
+            "type": "object",
+            "title": "Credits By Resolution",
+            "description": "Credits charged per generated image at each supported resolution"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "description",
+          "resolutions",
+          "default_resolution",
+          "aspect_ratios",
+          "supports_reference_images",
+          "credits_by_resolution"
+        ],
+        "title": "ApiImageModel"
+      },
+      "ApiJobStatus": {
+        "type": "string",
+        "enum": [
+          "queued",
+          "processing",
+          "succeeded",
+          "failed"
+        ],
+        "title": "ApiJobStatus"
+      },
+      "ApiResolution": {
+        "type": "string",
+        "enum": [
+          "480p",
+          "720p",
+          "1080p",
+          "2k",
+          "4k"
+        ],
+        "title": "ApiResolution",
+        "description": "Output resolution shared by the image and video APIs; each model lists the values it supports."
+      },
+      "ApiVideoMode": {
+        "type": "string",
+        "enum": [
+          "text",
+          "image",
+          "frames",
+          "references",
+          "video_to_video"
+        ],
+        "title": "ApiVideoMode"
+      },
+      "ApiVideoModel": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Model ID to pass as `model_id` when generating"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "description": "Display name of the model"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "description": "What the model is good at"
+          },
+          "modes": {
+            "items": {
+              "$ref": "#/components/schemas/ApiVideoMode"
+            },
+            "type": "array",
+            "title": "Modes",
+            "description": "Generation modes this model supports"
+          },
+          "resolutions": {
+            "items": {
+              "$ref": "#/components/schemas/ApiVideoResolutionOption"
+            },
+            "type": "array",
+            "title": "Resolutions",
+            "description": "Supported resolutions and their price"
+          },
+          "default_resolution": {
+            "$ref": "#/components/schemas/ApiResolution",
+            "description": "Resolution used when the request sends none"
+          },
+          "durations": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Durations",
+            "description": "Supported output durations in seconds"
+          },
+          "default_duration": {
+            "type": "integer",
+            "title": "Default Duration",
+            "description": "Duration used when the request sends none"
+          },
+          "aspect_ratios": {
+            "items": {
+              "$ref": "#/components/schemas/ApiAspectRatio"
+            },
+            "type": "array",
+            "title": "Aspect Ratios",
+            "description": "Aspect ratios this model supports"
+          },
+          "supports_audio": {
+            "type": "boolean",
+            "title": "Supports Audio",
+            "description": "Whether the output includes generated audio"
+          },
+          "max_reference_images": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Reference Images",
+            "description": "Maximum `reference_image_ids` in references mode, or null when not supported"
+          },
+          "max_reference_videos": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Reference Videos",
+            "description": "Maximum `reference_video_ids` in references mode, or null when not supported"
+          },
+          "output_duration_follows_source": {
+            "type": "boolean",
+            "title": "Output Duration Follows Source",
+            "description": "In video_to_video mode the output is as long as the source clip, and `duration` is not sent"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "description",
+          "modes",
+          "resolutions",
+          "default_resolution",
+          "durations",
+          "default_duration",
+          "aspect_ratios",
+          "supports_audio",
+          "output_duration_follows_source"
+        ],
+        "title": "ApiVideoModel"
+      },
+      "ApiVideoResolutionOption": {
+        "properties": {
+          "resolution": {
+            "$ref": "#/components/schemas/ApiResolution",
+            "description": "Value to send as `resolution`"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label",
+            "description": "Size the model renders at this tier, e.g. 360p for a 480p tier"
+          },
+          "credits_per_second": {
+            "type": "number",
+            "title": "Credits Per Second",
+            "description": "Credits charged per generated second at this tier"
+          }
+        },
+        "type": "object",
+        "required": [
+          "resolution",
+          "label",
+          "credits_per_second"
+        ],
+        "title": "ApiVideoResolutionOption"
+      },
+      "Body_upload_image_image_upload_post": {
+        "properties": {
+          "image": {
+            "type": "string",
+            "format": "binary",
+            "title": "Image",
+            "description": "PNG, JPEG or WebP image, up to 20 MB"
+          }
+        },
+        "type": "object",
+        "required": [
+          "image"
+        ],
+        "title": "Body_upload_image_image_upload_post"
+      },
+      "Body_upload_video_video_upload_post": {
+        "properties": {
+          "video": {
+            "type": "string",
+            "format": "binary",
+            "title": "Video",
+            "description": "MP4 or MOV video, up to 100 MB and 60 seconds"
+          }
+        },
+        "type": "object",
+        "required": [
+          "video"
+        ],
+        "title": "Body_upload_video_video_upload_post"
+      },
+      "CreateImageJobResponse": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id",
+            "description": "Poll `GET /image/{job_id}` with this ID"
+          },
+          "estimated_credits": {
+            "type": "number",
+            "title": "Estimated Credits",
+            "description": "Credits this job will be charged once the images are ready"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "estimated_credits"
+        ],
+        "title": "CreateImageJobResponse"
+      },
+      "CreateVideoJobResponse": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id",
+            "description": "Poll `GET /video/{job_id}` with this ID"
+          },
+          "estimated_credits": {
+            "type": "number",
+            "title": "Estimated Credits",
+            "description": "Credits this job is expected to cost once the video is ready"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "estimated_credits"
+        ],
+        "title": "CreateVideoJobResponse"
+      },
       "GenerateAiScriptedConvoModeEpisodeRequest": {
         "properties": {
           "prompt": {
@@ -393,6 +1091,67 @@
         ],
         "title": "GenerateEpisodeResponse"
       },
+      "GenerateImageApiRequest": {
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Prompt",
+            "description": "What to generate. Refer to references as `@Image 1`, \u2026"
+          },
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "A model `id` from `GET /image/models`"
+          },
+          "resolution": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ApiResolution"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "One of the model's `resolutions`; defaults to its `default_resolution`"
+          },
+          "aspect_ratio": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ApiAspectRatio"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "One of the model's `aspect_ratios`; defaults to 1:1 when supported"
+          },
+          "number_of_images": {
+            "type": "integer",
+            "maximum": 4.0,
+            "minimum": 1.0,
+            "title": "Number Of Images",
+            "description": "How many images to generate in this job",
+            "default": 1
+          },
+          "reference_image_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Reference Image Ids",
+            "description": "Images from `POST /image/upload` or earlier image jobs, in prompt order. The first is the image being edited; the rest are extra references."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "prompt",
+          "model_id"
+        ],
+        "title": "GenerateImageApiRequest"
+      },
       "GenerateUserScriptedConvoModeEpisodeRequest": {
         "properties": {
           "script": {
@@ -464,6 +1223,121 @@
         ],
         "title": "GenerateUserScriptedEpisodeRequest",
         "description": "A request to start a job to generate audio content with a provided script."
+      },
+      "GenerateVideoApiRequest": {
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Prompt",
+            "description": "What to generate. Refer to references as `@Image 1` or `@Video 1`."
+          },
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "A model `id` from `GET /video/models`"
+          },
+          "resolution": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ApiResolution"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "One of the model's `resolutions`; defaults to its `default_resolution`"
+          },
+          "aspect_ratio": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ApiAspectRatio"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "One of the model's `aspect_ratios`; defaults to 16:9 when supported"
+          },
+          "duration": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 30.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration",
+            "description": "Seconds, one of the model's `durations`; defaults to its `default_duration`"
+          },
+          "start_frame_image_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Frame Image Id",
+            "description": "Image to open the video with (image mode), from `POST /image/upload` or an image job"
+          },
+          "end_frame_image_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Frame Image Id",
+            "description": "Image to end the video with (frames mode); requires `start_frame_image_id`"
+          },
+          "reference_image_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Reference Image Ids",
+            "description": "Subject or style reference images (references mode), in prompt order"
+          },
+          "reference_video_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Reference Video Ids",
+            "description": "Motion or style reference clips (references mode), in prompt order"
+          },
+          "source_video_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Video Id",
+            "description": "Video to edit (video_to_video mode), from `POST /video/upload` or a video job"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "prompt",
+          "model_id"
+        ],
+        "title": "GenerateVideoApiRequest"
       },
       "GetEpisodeStatusResponse": {
         "properties": {
@@ -540,6 +1414,80 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "ImageJobStatusResponse": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id",
+            "description": "The job ID"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ApiJobStatus",
+            "description": "queued, processing, succeeded or failed"
+          },
+          "images": {
+            "items": {
+              "$ref": "#/components/schemas/ApiGeneratedImage"
+            },
+            "type": "array",
+            "title": "Images",
+            "description": "Generated images once succeeded"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error",
+            "description": "Why the job failed, when status is failed"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "status"
+        ],
+        "title": "ImageJobStatusResponse"
+      },
+      "ListImageModelsResponse": {
+        "properties": {
+          "models": {
+            "items": {
+              "$ref": "#/components/schemas/ApiImageModel"
+            },
+            "type": "array",
+            "title": "Models",
+            "description": "Image models available through the API"
+          }
+        },
+        "type": "object",
+        "required": [
+          "models"
+        ],
+        "title": "ListImageModelsResponse"
+      },
+      "ListVideoModelsResponse": {
+        "properties": {
+          "models": {
+            "items": {
+              "$ref": "#/components/schemas/ApiVideoModel"
+            },
+            "type": "array",
+            "title": "Models",
+            "description": "Video models available through the API"
+          }
+        },
+        "type": "object",
+        "required": [
+          "models"
+        ],
+        "title": "ListVideoModelsResponse"
       },
       "MusicTrackSpec": {
         "properties": {
@@ -621,6 +1569,66 @@
         "title": "ScriptSegment",
         "description": "A single unit of speech in the script defined by the user."
       },
+      "UploadImageResponse": {
+        "properties": {
+          "image_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Image Id",
+            "description": "Pass this ID in `reference_image_ids` when generating"
+          },
+          "width": {
+            "type": "integer",
+            "title": "Width",
+            "description": "Image width in pixels"
+          },
+          "height": {
+            "type": "integer",
+            "title": "Height",
+            "description": "Image height in pixels"
+          }
+        },
+        "type": "object",
+        "required": [
+          "image_id",
+          "width",
+          "height"
+        ],
+        "title": "UploadImageResponse"
+      },
+      "UploadVideoResponse": {
+        "properties": {
+          "video_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Video Id",
+            "description": "Pass as `reference_video_ids` or `source_video_id` when generating"
+          },
+          "duration_ms": {
+            "type": "integer",
+            "title": "Duration Ms",
+            "description": "Video length in milliseconds"
+          },
+          "width": {
+            "type": "integer",
+            "title": "Width",
+            "description": "Video width in pixels"
+          },
+          "height": {
+            "type": "integer",
+            "title": "Height",
+            "description": "Video height in pixels"
+          }
+        },
+        "type": "object",
+        "required": [
+          "video_id",
+          "duration_ms",
+          "width",
+          "height"
+        ],
+        "title": "UploadVideoResponse"
+      },
       "ValidationError": {
         "properties": {
           "loc": {
@@ -679,6 +1687,111 @@
           "email": "example@example.com",
           "status": "ok"
         }
+      },
+      "VideoJobStatusResponse": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id",
+            "description": "The job ID"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ApiJobStatus",
+            "description": "queued, processing, succeeded or failed"
+          },
+          "video_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Video Id",
+            "description": "Can be reused as a reference or source video"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url",
+            "description": "Download URL, valid for 24 hours; poll again for a fresh one"
+          },
+          "duration_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Ms",
+            "description": "Output length in milliseconds"
+          },
+          "width": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Width",
+            "description": "Output width in pixels"
+          },
+          "height": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Height",
+            "description": "Output height in pixels"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model",
+            "description": "Model that generated the video"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error",
+            "description": "Why the job failed, when status is failed"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "status"
+        ],
+        "title": "VideoJobStatusResponse"
       }
     },
     "securitySchemes": {
