@@ -1,0 +1,111 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Documentation | Wondercraft",
+  "colors": {
+    "primary": "#00CF9E",
+    "light": "#07C983",
+    "dark": "#000423"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "image-video-generation",
+              "capabilities",
+              "advanced-usage"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "API Documentation",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Endpoint Examples",
+            "pages": [
+              "api-reference/endpoint/convo_mode_ai_scripted",
+              "api-reference/endpoint/convo_mode_user_scripted",
+              "api-reference/endpoint/generate_podcast",
+              "api-reference/endpoint/user_scripted",
+              "api-reference/endpoint/get_job_status"
+            ]
+          },
+          {
+            "group": "Image Generation",
+            "pages": [
+              "api-reference/endpoint/list_image_models",
+              "api-reference/endpoint/upload_image",
+              "api-reference/endpoint/generate_image",
+              "api-reference/endpoint/get_image_job"
+            ]
+          },
+          {
+            "group": "Video Generation",
+            "pages": [
+              "api-reference/endpoint/list_video_models",
+              "api-reference/endpoint/upload_video",
+              "api-reference/endpoint/generate_video",
+              "api-reference/endpoint/get_video_job"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Help center",
+          "href": "https://support.wondercraft.ai/",
+          "icon": "book-open-cover"
+        },
+        {
+          "anchor": "Community",
+          "href": "https://join.slack.com/t/wondercraft-creatives/shared_invite/zt-2olnne8d3-drRCF_LPGsbmNan6PibNgQ",
+          "icon": "slack"
+        },
+        {
+          "anchor": "Blog",
+          "href": "https://www.wondercraft.ai/blog",
+          "icon": "newspaper"
+        }
+      ]
+    }
+  },
+  "logo": {
+    "light": "/logo/Logo-official.svg",
+    "dark": "/logo/Wondercraft white.png"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:support@wondercraft.ai"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Go to studio",
+      "href": "https://wondercraft.ai/studio"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/wondercraft_ai",
+      "linkedin": "https://www.linkedin.com/company/wondercraftai"
+    }
+  }
+}
