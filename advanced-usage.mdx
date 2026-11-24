@@ -133,3 +133,31 @@ This request:
 - Fades in over 3 seconds, starts playback at the beginning of the track, and fades out over 2 seconds.
 - Stops playback 10 seconds into the music or at the end of the podcast, whichever comes first.
 - Sets the music volume to 1%
+
+## Choosing the Convo Mode model
+
+The two Convo Mode endpoints (`/podcast/convo-mode/ai-scripted` and `/podcast/convo-mode/user-scripted`) take an optional `model` that picks the text-to-speech model voicing the episode:
+
+| `model` | What it does |
+| --- | --- |
+| `gemini-3.8-flash-tts` | The default, used when `model` is omitted. Gemini voices are voiced directly, and any other voice is matched with speech-to-speech after the Gemini render. |
+| `eleven_v3` | Voices the whole dialogue with ElevenLabs V3. |
+| `eleven_v4` | Voices the whole dialogue with ElevenLabs V4, the most expressive ElevenLabs model. |
+| `eleven_v4_turbo` | ElevenLabs V4, optimized for speed. |
+
+The ElevenLabs models voice every speaker, including Gemini voices, but they sound most natural with ElevenLabs voices.
+
+`delivery_instructions` work with every model. ElevenLabs models take no written direction, so on those models the instructions are turned into audio tags such as `[laughs]`, `[whispers]` or `[excited]`, placed in the script before the words they affect. The words of your script are never changed. You can also write audio tags into your script yourself.
+
+Example Full Request
+
+```json
+{
+  "prompt": "In this episode, we discuss the future of AI and its impact on the job market.",
+  "voice_ids": ["voice_1", "voice_2"],
+  "model": "eleven_v4",
+  "delivery_instructions": "The first host is calm and curious. The second host is excited and laughs often."
+}
+```
+
+Any other value for `model` is rejected with a 422 status code.
