@@ -1030,6 +1030,24 @@
               }
             ],
             "description": "An optional spec for adding background music to the generated script. Note that if the chosenmusic track is longer than the duration of the generated script, it will be cut off."
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "gemini-3.8-flash-tts",
+                  "eleven_v3",
+                  "eleven_v4",
+                  "eleven_v4_turbo"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model",
+            "description": "The model that voices the episode. Omit it for the default, `gemini-3.8-flash-tts`: Gemini voices are rendered directly, and any other voice is matched with speech-to-speech after the Gemini render. `eleven_v3`, `eleven_v4` and `eleven_v4_turbo` render the whole dialogue on ElevenLabs, with every voice including Gemini ones; `delivery_instructions` are applied there as ElevenLabs audio tags."
           }
         },
         "additionalProperties": false,
@@ -1184,6 +1202,24 @@
               }
             ],
             "description": "An optional spec for adding background music to the generated script. Note that if the chosenmusic track is longer than the duration of the generated script, it will be cut off."
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "gemini-3.8-flash-tts",
+                  "eleven_v3",
+                  "eleven_v4",
+                  "eleven_v4_turbo"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model",
+            "description": "The model that voices the episode. Omit it for the default, `gemini-3.8-flash-tts`: Gemini voices are rendered directly, and any other voice is matched with speech-to-speech after the Gemini render. `eleven_v3`, `eleven_v4` and `eleven_v4_turbo` render the whole dialogue on ElevenLabs, with every voice including Gemini ones; `delivery_instructions` are applied there as ElevenLabs audio tags."
           }
         },
         "additionalProperties": false,
